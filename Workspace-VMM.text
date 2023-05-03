@@ -21,9 +21,7 @@
 Feature require: 'VMMaker'.
 Feature require: 'SqueakCompatibility'.
 Feature require: 'VectorEnginePlugin'.
-
-"A few things are out of date (discuss later). Fix them with a manual patch."
-"VMM-patch-dtl.st"
+Feature require: 'HelloWorldPlugin'.
 
 VectorEnginePlugin translateInDirectory: DirectoryEntry currentDirectory doInlining: true.
 

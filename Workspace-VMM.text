@@ -1,0 +1,62 @@
+"How to write a simple VM plugin in Cuis"
+
+"Working with Cuis, I want to make my own VM plugin. The VM sounds complicated, so how do I get started?"
+
+"Resources:
+	https://github.com/OpenSmalltalk/opensmalltalk-vm
+	http://wiki.squeak.org/squeak/6354
+	https://lists.cuis.st/mailman/archives/cuis-dev/2020-May/001736.html
+	http://files.squeak.org/docs/OOPSLA.Squeak.html"
+
+"Agenda:
+	- Create a new HelloWorldPlugin
+	- Build the plugin and verify that primitives work (traditional squeakvm, V3 Cuis)
+	- Basics of objects (parameters) on the stack and the intrepreter proxy
+	- Basics of error handling (keep the stack healthy)
+	- Link to a C function in support code with HelloExternalWorldPlugin
+	- Building opensmalltalk-vm (Cog/Spur) with the new plugins"
+	
+
+Feature require: 'VMMaker'.
+Feature require: 'SqueakCompatibility'.
+Feature require: 'VectorEnginePlugin'.
+
+"A few things are out of date (discuss later). Fix them with a manual patch."
+"VMM-patch-dtl.st"
+
+VectorEnginePlugin translateInDirectory: DirectoryEntry currentDirectory doInlining: true.
+
+HelloWorldPlugin translateInDirectory: DirectoryEntry currentDirectory doInlining: true.
+
+"VMMakerTool in Squeak does lots of stuff, here we will just manually update a necessary configuration file"
+"Add HelloWorldPlugin to the src/plugins.ext file"
+
+HelloWorldPlugin
+	translateInDirectory: (DirectoryEntry withPathName: './src/plugins/HelloWorldPlugin')
+	doInlining: true.
+
+"After building and installing the VM, we can run Cuis6.0-5772-v3.image in the new VM and try our new primitives"
+
+Smalltalk listLoadedModules. "Will tell us if our plugin was loaded (on first reference to a primitive)"
+
+"Now do a plugin that references external code
+Add header file platforms/Cross/plugins/HelloExternalWorld/HelloExternalWorld.h
+Add (unix) implementation platforms/unix/plugins/HelloExternalWorld/myExternalModule.c
+Add HelloExternalWorldPlugin to the src/plugins.ext file"
+
+HelloExternalWorldPlugin
+	translateInDirectory: (DirectoryEntry withPathName: './src/plugins/HelloExternalWorldPlugin')
+	doInlining: true.
+
+"So far we are working with the traditional interpreter VM. What about opensmalltalk-vm with Cog and Spur?"
+
+oscogPluginSrc := '/home/lewis/squeak/git/opensmalltalk-vm/src/plugins/'.
+
+HelloWorldPlugin
+	translateInDirectory: (DirectoryEntry withPathName: oscogPluginSrc, 'HelloWorldPlugin')
+	doInlining: true.
+
+HelloExternalWorldPlugin
+	translateInDirectory: (DirectoryEntry withPathName: oscogPluginSrc, 'HelloExternalWorldPlugin')
+	doInlining: true.
+

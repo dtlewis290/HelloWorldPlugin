@@ -3,6 +3,7 @@
 "Working with Cuis, I want to make my own VM plugin. The VM sounds complicated, so how do I get started?"
 
 "Resources:
+	https://github.com/dtlewis290/HelloWorldPlugin
 	https://github.com/OpenSmalltalk/opensmalltalk-vm
 	http://wiki.squeak.org/squeak/6354
 	https://lists.cuis.st/mailman/archives/cuis-dev/2020-May/001736.html
@@ -59,4 +60,7 @@ HelloWorldPlugin
 HelloExternalWorldPlugin
 	translateInDirectory: (DirectoryEntry withPathName: oscogPluginSrc, 'HelloExternalWorldPlugin')
 	doInlining: true.
+
+
+
 
